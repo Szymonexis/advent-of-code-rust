@@ -77,6 +77,6 @@ fn first_strat_calcs(line: &String, help: &FirstStratHelp) -> (usize, usize) {
     return (my_score, outcome);
 }
 
-fn get_index(moves: &Vec<char>, choice: &char) -> usize {
-    return moves.iter().position(|&c| c == *choice).unwrap();
+fn get_index(c_vec: &Vec<char>, c: &char) -> usize {
+    return c_vec.iter().position(|&r| r == *c).unwrap();
 }
