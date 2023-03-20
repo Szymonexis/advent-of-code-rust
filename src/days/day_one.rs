@@ -18,10 +18,6 @@ pub fn day_one(lines: &Vec<String>) {
 
     elves.push(sum);
 
-    for elf in &elves {
-        println!("{elf}")
-    }
-
     let mut sorted_elves = elves.clone();
     sorted_elves.sort_by(|a, b| b.cmp(a));
     println!("most calories: {:?}", &sorted_elves[0]);
