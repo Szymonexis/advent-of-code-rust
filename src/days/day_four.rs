@@ -1,33 +1,69 @@
 pub fn day_four(lines: &Vec<String>) {
-    let mut hits = 0;
+    let mut full_hits = 0;
+    let mut partial_hits = 0;
 
     for line in lines {
         let (f_b, f_e, s_b, s_e) = get_sections(line);
         let (f_vec, s_vec) = get_vecs(f_b, f_e, s_b, s_e);
 
-        if is_section_contained(&f_vec, &s_vec) {
-            hits += 1;
+        let (fully, partially) = is_section_contained(&f_vec, &s_vec, &f_b, &s_b, &f_e, &s_e);
+
+        if fully {
+            full_hits += 1;
+        }
+
+        if partially {
+            partial_hits += 1;
         }
     }
 
-    println!("pairs that have a full overlap: {hits}");
+    println!("pairs that have a full overlap: {full_hits}");
+    println!("pairs that have a partial overlap: {partial_hits}");
 }
 
-fn is_section_contained(vec1: &Vec<bool>, vec2: &Vec<bool>) -> bool {
-    for i in 0..vec1.len() {
-        if vec1[i] {
-            let slice1 = &vec1[i..];
-            if slice1.len() > vec2.len() {
-                break;
-            }
-
-            let slice2 = &vec2[i..(i + slice1.len())];
-            if slice1 == slice2 {
-                return true;
-            }
+fn is_section_partially_contained(master: &Vec<bool>) -> bool {
+    for item in master {
+        if *item {
+            return *item;
         }
     }
+
     return false;
+}
+
+fn is_section_fully_contained(master: &Vec<bool>, slave: &Vec<bool>, s: &isize, e: &isize) -> bool {
+    for i in (*s as usize)..=(*e as usize) {
+        if !master[i] || !slave[i] {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+fn is_section_contained(
+    vec1: &Vec<bool>,
+    vec2: &Vec<bool>,
+    s1: &isize,
+    s2: &isize,
+    e1: &isize,
+    e2: &isize,
+) -> (bool, bool) {
+    if vec1.len() != vec2.len() {
+        return (false, false);
+    }
+
+    let mut master: Vec<bool> = Vec::new();
+
+    for i in 0..vec1.len() {
+        master.push(vec1[i] && vec2[i]);
+    }
+
+    return (
+        is_section_fully_contained(&master, vec1, s1, e1)
+            || is_section_fully_contained(&master, vec2, s2, e2),
+        is_section_partially_contained(&master),
+    );
 }
 
 fn get_vecs(f_b: isize, f_e: isize, s_b: isize, s_e: isize) -> (Vec<bool>, Vec<bool>) {
