@@ -32,3 +32,5 @@ fn main() {
     println!("day 6");
     day_six(&read_file_lines(&Days::get_day(6)));
 }
+
+
